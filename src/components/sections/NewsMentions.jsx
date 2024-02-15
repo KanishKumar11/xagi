@@ -7,11 +7,13 @@ import create from "zustand";
 var res = [];
 const NewsMentions = () => {
   const [newsData, setNewsData] = React.useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   // useEffect(() => {
   // useEffect(() => {
   const datafetch = async () => {
     res = await fetchNews();
+    setNewsData(res);
+    setLoading(false);
     console.log(res);
     // }, []);
   };
@@ -36,7 +38,7 @@ const NewsMentions = () => {
         </>
       ) : (
         <div>
-          {res.map((item, index) => (
+          {newsData.map((item, index) => (
             <div key={index}>
               <h3>{item.title}</h3>
               <p>{item.snippet}</p>
