@@ -22,9 +22,9 @@ const Competition = () => {
         <h2>Competition</h2>
       </div>
       <div>
-        {data.map((item, index) => (
+        {/* {data.map((item, index) => (
           <div key={index}>{item.name}</div>
-        ))}
+        ))} */}
       </div>
     </div>
   );
