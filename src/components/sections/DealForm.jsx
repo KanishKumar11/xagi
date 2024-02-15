@@ -29,11 +29,11 @@ import { createClient } from "@supabase/supabase-js";
 import toast, { Toaster } from "react-hot-toast";
 
 const formSchema = z.object({
-  name: z.string(),
-  origin: z.string(),
-  rounddetails: z.string(),
-  tldr: z.string(),
-  links: z.string(),
+  name: z.string().min(1).max(256),
+  origin: z.string().min(1).max(256),
+  rounddetails: z.string().min(1),
+  tldr: z.string().min(1),
+  links: z.string().min(1),
   date: z.date(),
   status: z.enum(["Invested", "Passed", "IC", "Inbound"]),
   website: z.string().url(),
@@ -57,6 +57,11 @@ export default function Home() {
       website: "",
     },
   });
+  // const userData = async () => {
+  //   // const { data, error } = await supabase.auth.getUserIdentities();
+  //   console.log(data);
+  // };
+  // userData();
 
   const handleSubmit = async (values) => {
     console.log(values.name);

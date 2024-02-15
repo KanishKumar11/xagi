@@ -6,12 +6,12 @@ import AiAnalystBot from "../sections/AiAnalystBot";
 
 const Dashboard = () => {
   return (
-    <div className="grid grid-cols-12 w-full gap-20 p-10">
-      <div className=" col-span-8 gap-10 flex-col flex">
+    <div className="grid w-full grid-cols-12 gap-20 p-10">
+      <div className="col-span-12 flex flex-col gap-10 xl:col-span-8">
         <Details />
         <DealFlow />
       </div>
-      <div className=" col-span-4 flex gap-10 flex-col">
+      <div className="col-span-12 flex flex-col gap-10 xl:col-span-4">
         <RecentUpdates />
         <AiAnalystBot />
       </div>
