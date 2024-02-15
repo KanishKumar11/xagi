@@ -32,12 +32,12 @@ import NewTeamForm from "@/components/basejump/NewTeamForm";
 
 type PopoverTriggerProps = ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
-type SelectedAccount = ReturnType<typeof useAccounts>["data"][0] | null;
+// type SelectedAccount = ReturnType<typeof useAccounts>["data"] | null;
 
 interface AccountSelectorProps extends PopoverTriggerProps {
   accountId: string;
   afterTeamCreated?: (account: CreateAccountResponse) => void;
-  onAccountSelected?: (account: SelectedAccount) => void;
+  onAccountSelected?: (account: any) => void;
 }
 
 export default function AccountSelector({
@@ -124,9 +124,9 @@ export default function AccountSelector({
                   />
                 </CommandItem>
               </CommandGroup>
-              {teamAccounts?.length > 0 && (
+              {teamAccounts?.length! > 0 && (
                 <CommandGroup heading="Teams">
-                  {teamAccounts.map((team) => (
+                  {teamAccounts?.map((team) => (
                     <CommandItem
                       key={team.account_id}
                       onSelect={() => {
