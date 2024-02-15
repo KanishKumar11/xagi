@@ -12,6 +12,7 @@ const NewsMentions = () => {
   // useEffect(() => {
   const datafetch = async () => {
     res = await fetchNews();
+    console.log(res);
     // }, []);
   };
   datafetch();
