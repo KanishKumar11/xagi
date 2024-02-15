@@ -38,7 +38,7 @@ const NewsMentions = () => {
         </>
       ) : (
         <div>
-          {newsData.map((item, index) => (
+          {newsData?.map((item, index) => (
             <div key={index}>
               <h3>{item.title}</h3>
               <p>{item.snippet}</p>
