@@ -1,29 +1,22 @@
-import axios from "axios";
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { GrTextWrap } from "react-icons/gr";
+import { fetchSummary } from "./fetchData";
+var data;
 const Summary = () => {
-  const getSummary = async (idea) => {
-    const baseURL = "https://kagi.com/api/v0/enrich/web?q=app%20login";
-
-    const params = {
-      q: idea,
+  const [sum, setSum] = useState("a");
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchSummary(
+        "https://indtech.in/how-to-download-royalty-free-music-for-free/"
+      );
+      console.log("summa");
+      console.log(result);
+      setSum(result);
     };
-    const headers = {
-      Authorization:
-        "Bot AQCAV0UEGgU.YyWNxqdLixmHDZgUW6IfV4JlvFGf-cYKybEf1jphm0Q",
-    };
 
-    try {
-      console.log("testing");
-      const response = await axios.get(baseURL, { params, headers });
-      // console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching summary:", error);
-      throw error;
-    }
-  };
-  getSummary("A app that delivers vegetables to home direct from farm");
+    fetchData();
+  }, []);
   return (
     <div className="rounded-[50px] bg-white p-14">
       <div className="mb-4 flex items-center gap-3 text-2xl font-bold">
@@ -32,7 +25,7 @@ const Summary = () => {
         </div>
         <h2>Summary</h2>
       </div>
-      <div></div>
+      <div>{sum}</div>
     </div>
   );
 };

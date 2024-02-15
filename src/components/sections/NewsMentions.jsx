@@ -37,15 +37,11 @@ const NewsMentions = () => {
           <p>Loading...</p>
         </>
       ) : (
-        <div>
-          {newsData?.map((item, index) => (
+        <div className="flex flex-col gap-5">
+          {newsData?.slice(0, 3).map((item, index) => (
             <div key={index}>
-              <h3>{item.title}</h3>
+              <h3 className="text-lg font-bold">{item.title}</h3>
               <p>{item.snippet}</p>
-              <p>Published: {new Date(item.published).toLocaleString()}</p>
-              <a href={item.url} target="_blank" rel="noopener noreferrer">
-                Read more
-              </a>
             </div>
           ))}
         </div>

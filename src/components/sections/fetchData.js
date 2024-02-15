@@ -25,7 +25,6 @@ export const fetchNews = async () => {
 export const fetchSummary = async (url) => {
   try {
     const headersList = {
-      url: url,
       Accept: "*/*",
       // summary_type: "summary",
       // engine: "cecil",
@@ -33,11 +32,14 @@ export const fetchSummary = async (url) => {
         "Bot AQCAV0UEGgU.YyWNxqdLixmHDZgUW6IfV4JlvFGf-cYKybEf1jphm0Q",
     };
 
-    const response = await axios.post(`https://kagi.com/api/v0/summarize`, {
-      headers: headersList,
-    });
-    // const data = await response.data.data;
-    // console.log(response);
+    const response = await axios.get(
+      `https://kagi.com/api/v0/summarize?url=${url}`,
+      {
+        headers: headersList,
+      }
+    );
+    const data = await response.data.data.output;
+    // console.log(data);
     return data;
   } catch (err) {
     console.log(err);
