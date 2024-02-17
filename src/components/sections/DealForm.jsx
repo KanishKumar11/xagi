@@ -26,8 +26,11 @@ import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
-import toast, { Toaster } from "react-hot-toast";
-
+import toast, { Toaster, useToasterStore } from "react-hot-toast";
+import { useState } from "react";
+import { fetchMetaData } from "./fetchData";
+import { useStore, setName } from "@/store";
+import appStore from "@/mobxStore";
 const formSchema = z.object({
   name: z.string().min(1).max(256),
   origin: z.string().min(1).max(256),
@@ -43,7 +46,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-export default function Home() {
+export default function Home({ onBrandChange }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,11 +60,6 @@ export default function Home() {
       website: "",
     },
   });
-  // const userData = async () => {
-  //   // const { data, error } = await supabase.auth.getUserIdentities();
-  //   console.log(data);
-  // };
-  // userData();
 
   const handleSubmit = async (values) => {
     console.log(values.name);
@@ -102,7 +100,29 @@ export default function Home() {
       console.error("Error:", error.message);
     }
   };
-
+  const [webUrl, setWebUrl] = useState("");
+  const [name, setName] = useState("");
+  const fetchData = async (e) => {
+    e.preventDefault();
+    const result = await fetchMetaData(webUrl);
+    console.log(result);
+    console.log(webUrl);
+    console.log(result.metadata.title);
+    form.setValue("name", result.metadata.title);
+    setName(result.metadata.title);
+    onBrandChange(result.metadata);
+    form.setValue("tldr", result.metadata.description);
+    form.setValue("links", result.metadata.website);
+    form.setValue("date", Date.now());
+    appStore.updateName(result.metadata.title);
+    appStore.updateTldr(result.metadata.description);
+    appStore.updateLinks(result.metadata.website);
+  };
+  // setName(name);
+  console.log("use store");
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const links = useStore((state) => state.name);
+  console.log(links);
   return (
     <>
       <Toaster />
@@ -113,9 +133,32 @@ export default function Home() {
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-8"
           >
-            {/* ... Existing form fields ... */}
-
-            {/* New form fields */}
+            <div className="flex w-full flex-wrap items-center gap-5">
+              <FormField
+                control={form.control}
+                name="website"
+                className="flex-1"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>Complete Website</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., https://example.com/"
+                          {...field}
+                          onChange={(e) => setWebUrl(e.target.value)}
+                          value={webUrl}
+                          className="flex-1"
+                        />
+                      </FormControl>
+                      <FormDescription>Your website URL</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <Button onClick={fetchData}>Fetch Details</Button>
+            </div>
             <FormField
               control={form.control}
               name="name"
@@ -276,26 +319,6 @@ export default function Home() {
                       </SelectContent>
                     </Select>
                     <FormDescription>Your deal status</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-
-            <FormField
-              control={form.control}
-              name="website"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>Complete Website</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., https://example.com/"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>Your website URL</FormDescription>
                     <FormMessage />
                   </FormItem>
                 );

@@ -1,7 +1,8 @@
 "use server";
 import axios from "axios";
+import metaFetcher from "meta-fetcher";
 
-export const fetchNews = async () => {
+export const fetchNews = async (name) => {
   try {
     const headersList = {
       Accept: "*/*",
@@ -10,7 +11,7 @@ export const fetchNews = async () => {
     };
 
     const response = await axios.get(
-      "https://kagi.com/api/v0/enrich/news?q=app",
+      `https://kagi.com/api/v0/enrich/news?q=${name}`,
       {
         headers: headersList,
       }
@@ -26,8 +27,7 @@ export const fetchSummary = async (url) => {
   try {
     const headersList = {
       Accept: "*/*",
-      // summary_type: "summary",
-      // engine: "cecil",
+
       Authorization:
         "Bot AQCAV0UEGgU.YyWNxqdLixmHDZgUW6IfV4JlvFGf-cYKybEf1jphm0Q",
     };
@@ -45,7 +45,29 @@ export const fetchSummary = async (url) => {
     console.log(err);
   }
 };
-fetchSummary("https://indtech.in/how-to-download-royalty-free-music-for-free/");
+export const fetchSummaryText = async (text) => {
+  try {
+    const headersList = {
+      Accept: "*/*",
+
+      Authorization:
+        "Bot AQCAV0UEGgU.YyWNxqdLixmHDZgUW6IfV4JlvFGf-cYKybEf1jphm0Q",
+    };
+
+    const response = await axios.get(
+      `https://kagi.com/api/v0/summarize?text=${text}`,
+      {
+        headers: headersList,
+      }
+    );
+    const data = await response.data.data.output;
+    // console.log(data);
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const fetchCompetition = async (idea) => {
   const query = `
     Given an idea, give me a list of 6 of its potential competitors in perfect json response, including the following keys: (name, url and description). 
@@ -64,7 +86,7 @@ export const fetchCompetition = async (idea) => {
 
   try {
     const response = await axios.post(`https://kagi.com/api/v0/fastgpt`, data, {
-      headers: headers, // Make sure to define headers before using this function
+      headers: headers,
     });
 
     const output = await JSON.parse(response.data.data.output);
@@ -74,4 +96,8 @@ export const fetchCompetition = async (idea) => {
     console.error(error);
     return [];
   }
+};
+export const fetchMetaData = async (url) => {
+  const response = await metaFetcher(url);
+  return response;
 };

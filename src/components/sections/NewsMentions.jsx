@@ -1,28 +1,30 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BsCardText } from "react-icons/bs";
-import axios from "axios";
 import { fetchNews } from "@/components/sections/fetchData";
-import create from "zustand";
-var res = [];
-const NewsMentions = () => {
-  const [newsData, setNewsData] = React.useState([]);
-  const [loading, setLoading] = useState(true);
-  // useEffect(() => {
-  // useEffect(() => {
-  const datafetch = async () => {
-    res = await fetchNews();
-    setNewsData(res);
-    setLoading(false);
-    console.log(res);
-    // }, []);
-  };
-  datafetch();
-  useEffect(() => {
-    console.log(loading);
-  }, [loading]);
 
-  // }, [newsData]);
+const NewsMentions = ({ name }) => {
+  const [newsData, setNewsData] = React.useState([]);
+  const [loading, setLoading] = useState(!name);
+
+  useEffect(() => {
+    const fetchNewsData = async () => {
+      if (name) {
+        setLoading(true);
+        try {
+          const result = await fetchNews(name);
+          setNewsData(result);
+          setLoading(false);
+          console.log(result);
+        } catch (error) {
+          console.error("Error fetching news:", error);
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchNewsData();
+  }, [name]);
 
   return (
     <div className="rounded-[50px] bg-white p-14">
@@ -32,19 +34,27 @@ const NewsMentions = () => {
         </div>
         <h2>News Mentions</h2>
       </div>
-      {loading ? (
+      {name ? (
         <>
-          <p>Loading...</p>
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <div className="flex flex-col gap-5">
+              {newsData.length > 0 ? (
+                newsData.slice(0, 3).map((item, index) => (
+                  <div key={index}>
+                    <h3 className="text-lg font-bold">{item.title}</h3>
+                    <p>{item.snippet}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No results found!</p>
+              )}
+            </div>
+          )}
         </>
       ) : (
-        <div className="flex flex-col gap-5">
-          {newsData?.slice(0, 3).map((item, index) => (
-            <div key={index}>
-              <h3 className="text-lg font-bold">{item.title}</h3>
-              <p>{item.snippet}</p>
-            </div>
-          ))}
-        </div>
+        <p>Enter the website url to fetch news mentions</p>
       )}
     </div>
   );
