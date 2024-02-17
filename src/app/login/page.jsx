@@ -24,6 +24,7 @@ export default function Login({ searchParams }) {
     if (error) {
       return redirect("/login?message=Could not authenticate user");
     }
+    cookieStore.set("email", email, { path: "/" });
 
     return redirect("/");
   };
@@ -48,6 +49,7 @@ export default function Login({ searchParams }) {
     if (error) {
       return redirect("/login?message=Could not authenticate user");
     }
+    cookieStore.set("email", email, { path: "/" });
 
     return redirect("/dashboard");
   };

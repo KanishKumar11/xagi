@@ -31,6 +31,8 @@ import { useState } from "react";
 import { fetchMetaData } from "./fetchData";
 import { useStore, setName } from "@/store";
 import appStore from "@/mobxStore";
+import Cookies from "@/components/sections/cookies";
+const email = Cookies();
 const formSchema = z.object({
   name: z.string().min(1).max(256),
   origin: z.string().min(1).max(256),
@@ -39,7 +41,7 @@ const formSchema = z.object({
   links: z.string().min(1),
   date: z.date(),
   status: z.enum(["Invested", "Passed", "IC", "Inbound"]),
-  website: z.string().url(),
+  website: z.string(),
 });
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -78,6 +80,7 @@ export default function Home({ onBrandChange }) {
             deal_date: values.date,
             status: values.status,
             website: values.website,
+            email: email,
           },
         ],
         { onConflict: ["name"] }

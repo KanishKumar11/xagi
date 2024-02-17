@@ -4,7 +4,7 @@ import { GrTextWrap } from "react-icons/gr";
 import { fetchSummary, fetchSummaryText } from "./fetchData";
 
 const Summary = ({ tldr, links }) => {
-  const [summary, setSummary] = useState("Enter website url to fetch!");
+  const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
   const [showReadMore, setShowReadMore] = useState(true);
 
@@ -52,6 +52,7 @@ const Summary = ({ tldr, links }) => {
         </div>
         <h2>Summary</h2>
       </div>
+      {!loading && !summary && <>Enter website url to fetch summary</>}
       {loading && <p>Loading...</p>}
       {!loading && summary ? (
         <div>{showReadMore ? `${summary.slice(0, 300)}...` : summary}</div>

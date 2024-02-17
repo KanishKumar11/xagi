@@ -6,6 +6,7 @@ import { Columns } from "./Columns";
 import { HiPlus } from "react-icons/hi";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
+import Cookies from "@/components/sections/cookies";
 
 const data = [
   {
@@ -100,17 +101,30 @@ const data = [
   },
 ];
 const DealFlow = () => {
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const getEmail = async () => {
+      const userEmail = await Cookies();
+      console.log(userEmail.value);
+      await setEmail(userEmail.value);
+      await console.log(email);
+    };
+    getEmail();
+  }, [email]);
   const [data, setData] = useState([]);
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
+  // console.log(userEmail);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { data: deals, error } = await supabase
           .from("details")
-          .select("*");
+          .select("*")
+          .eq("email", email);
 
         if (error) {
           console.error("Error fetching data from Supabase:", error.message);

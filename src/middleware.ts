@@ -13,7 +13,11 @@ export async function middleware(request: NextRequest) {
       data: { session },
     } = await supabase.auth.getSession();
     //
-    if (!session && request.nextUrl.pathname.startsWith("/dashboard")) {
+    if (!session && request.nextUrl.pathname.startsWith("/app")) {
+      // redirect to /login
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (!session && request.nextUrl.pathname.startsWith("/add-a-new-deal")) {
       // redirect to /login
       return NextResponse.redirect(new URL("/login", request.url));
     }
