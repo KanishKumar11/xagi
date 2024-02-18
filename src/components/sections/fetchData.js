@@ -17,7 +17,8 @@ export const fetchNews = async (name) => {
       }
     );
     const data = await response.data.data;
-    // console.log(data);
+    console.log(data);
+    console.log(name);
     return data;
   } catch (err) {
     console.log(err);
@@ -70,7 +71,7 @@ export const fetchSummaryText = async (text) => {
 
 export const fetchCompetition = async (idea) => {
   const query = `
-    Given an idea, give me a list of 6 of its potential competitors in perfect json response, including the following keys: (name, url and description). 
+    Given an idea, give me a list of 6 of its potential competitors in perfect json response, including the following keys: (name, url and description).
     Answer only in json without any text. Do not include citations or sources. Your first idea is ${idea}
   `;
 

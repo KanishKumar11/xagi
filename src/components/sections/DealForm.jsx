@@ -26,13 +26,12 @@ import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
-import toast, { Toaster, useToasterStore } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
 import { fetchMetaData } from "./fetchData";
-import { useStore, setName } from "@/store";
-import appStore from "@/mobxStore";
+import { v4 as uuidv4 } from "uuid";
+
 import Cookies from "@/components/sections/cookies";
-const email = Cookies();
 const formSchema = z.object({
   name: z.string().min(1).max(256),
   origin: z.string().min(1).max(256),
@@ -47,6 +46,9 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
+function generateUniqueId() {
+  return uuidv4();
+}
 
 export default function Home({ onBrandChange }) {
   const form = useForm({
@@ -81,9 +83,10 @@ export default function Home({ onBrandChange }) {
             status: values.status,
             website: values.website,
             email: email,
+            id: id,
           },
         ],
-        { onConflict: ["name"] }
+        { onConflict: ["id"] }
       );
       toast.dismiss(loadingToast);
 
@@ -103,29 +106,32 @@ export default function Home({ onBrandChange }) {
       console.error("Error:", error.message);
     }
   };
+
+  const id = generateUniqueId();
+
   const [webUrl, setWebUrl] = useState("");
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const fetchData = async (e) => {
     e.preventDefault();
+    const cookiesEmail = await Cookies();
+    setEmail(cookiesEmail.value);
+    console.log(email);
+    console.log(cookiesEmail);
+    console.log(typeof email);
     const result = await fetchMetaData(webUrl);
     console.log(result);
     console.log(webUrl);
     console.log(result.metadata.title);
     form.setValue("name", result.metadata.title);
-    setName(result.metadata.title);
     onBrandChange(result.metadata);
     form.setValue("tldr", result.metadata.description);
     form.setValue("links", result.metadata.website);
-    form.setValue("date", Date.now());
-    appStore.updateName(result.metadata.title);
-    appStore.updateTldr(result.metadata.description);
-    appStore.updateLinks(result.metadata.website);
+    form.setValue("website", result.metadata.website);
+    const date = new Date(Date.now());
+    console.log(date);
+    form.setValue("date", date);
   };
-  // setName(name);
-  console.log("use store");
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const links = useStore((state) => state.name);
-  console.log(links);
   return (
     <>
       <Toaster />

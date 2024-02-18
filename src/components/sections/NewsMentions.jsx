@@ -1,19 +1,32 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsCardText } from "react-icons/bs";
 import { fetchNews } from "@/components/sections/fetchData";
 
 const NewsMentions = ({ name }) => {
   const [newsData, setNewsData] = React.useState([]);
   const [loading, setLoading] = useState(!name);
+  const isValidName = (input) => {
+    const words = input.split(" ");
+
+    if (words.length <= 2) {
+      return input.trim();
+    } else {
+      return words.slice(0, 2).join(" ").trim();
+    }
+  };
 
   useEffect(() => {
     const fetchNewsData = async () => {
       if (name) {
         setLoading(true);
         try {
-          const result = await fetchNews(name);
+          const sName = isValidName(name);
+          console.log("sname", sName);
+          const uriName = encodeURI(sName);
+          const result = await fetchNews(sName);
           setNewsData(result);
+          console.log("news");
           setLoading(false);
           console.log(result);
         } catch (error) {

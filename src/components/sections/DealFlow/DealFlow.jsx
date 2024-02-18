@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BiSolidBriefcaseAlt2 } from "react-icons/bi";
 import DataTable from "./DataTable";
 import { Columns } from "./Columns";
@@ -8,110 +8,17 @@ import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import Cookies from "@/components/sections/cookies";
 
-const data = [
-  {
-    projectName: "ion Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#/k",
-    status: "Invested",
-  },
-  {
-    projectName: "ion Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Passed",
-  },
-  {
-    projectName: "don Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "IC",
-  },
-  {
-    projectName: "con Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Inbound",
-  },
-  {
-    projectName: "bon Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Invested",
-  },
-  {
-    projectName: "aon Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Invested",
-  },
-  {
-    projectName: "con Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Inbound",
-  },
-  {
-    projectName: "bon Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Invested",
-  },
-  {
-    projectName: "aon Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Invested",
-  },
-  {
-    projectName: "con Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Inbound",
-  },
-  {
-    projectName: "bon Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Invested",
-  },
-  {
-    projectName: "aon Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Invested",
-  },
-  {
-    projectName: "con Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Inbound",
-  },
-  {
-    projectName: "bon Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Invested",
-  },
-  {
-    projectName: "aon Protocol",
-    tldr: "An LSD solution for unlocking validator staked assets. ",
-    deck: "#",
-    status: "Invested",
-  },
-];
 const DealFlow = () => {
   const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    const getEmail = async () => {
-      const userEmail = await Cookies();
-      console.log(userEmail.value);
-      await setEmail(userEmail.value);
-      await console.log(email);
-    };
-    getEmail();
+  const getEmailCallback = useCallback(async () => {
+    const userEmail = await Cookies();
+    console.log(userEmail.value);
+    setEmail(userEmail.value);
+    console.log(email); // This won't reflect the updated state immediately
   }, [email]);
+  useEffect(() => {
+    getEmailCallback(); // Execute the callback on mount
+  }, [getEmailCallback]);
   const [data, setData] = useState([]);
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,

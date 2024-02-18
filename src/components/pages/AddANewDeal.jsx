@@ -1,21 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DealForm from "../sections/DealForm";
 import Summary from "../sections/Summary";
 import NewsMentions from "../sections/NewsMentions";
 import Competition from "../sections/Competition";
-import { useMobXStore } from "@/MobXProvider";
 
 const AddANewDeal = () => {
-  const store = useMobXStore();
-  const [brand, setBrand] = useState("");
-  const [link, setLink] = useState("");
-  const [desc, setDesc] = useState("");
-  // const brand = store.name;
-  const [loading, setloading] = useState(true);
-  useEffect(() => {
-    if (brand) setloading(false);
-  }, [brand]);
+  const [brand, setBrand] = useState(null);
+  const [link, setLink] = useState(null);
+  const [desc, setDesc] = useState(null);
   const handleBrandChange = (newBrand) => {
     setBrand(newBrand.title);
     setLink(newBrand.website);

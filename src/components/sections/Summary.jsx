@@ -14,13 +14,14 @@ const Summary = ({ tldr, links }) => {
         setLoading(true);
         setSummary(null);
         const result = await fetchSummary(links);
+        console.log(result);
         if (result === undefined) {
           const res2 = await fetchSummaryText(tldr);
           setSummary(res2);
         } else {
           setSummary(result);
         }
-        setShowReadMore(result.split(" ").length > 30);
+        // setShowReadMore(result.split(" ").length > 30);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching summary:", error);
@@ -36,7 +37,6 @@ const Summary = ({ tldr, links }) => {
   }, [fetchData]);
 
   const handleReadMore = () => {
-    // Toggle the showReadMore state to expand or collapse the area
     setShowReadMore(!showReadMore);
   };
 

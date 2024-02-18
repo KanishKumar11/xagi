@@ -38,7 +38,7 @@ const RecentUpdates = () => {
         const { data: deals, error } = await supabase
           .from("details")
           .select("*")
-          .order({ createdAt: "desc" });
+          .order("createdAt", { ascending: false });
         if (error) {
           console.error("Error fetching data from Supabase:", error.message);
         } else {
@@ -52,39 +52,64 @@ const RecentUpdates = () => {
     fetchData();
   });
   return (
-    <div className="relative max-w-5xl rounded-[50px] bg-white p-10 py-12">
+    <div className="relative w-full max-w-5xl rounded-[50px] bg-white p-10 py-12">
       <div className="mb-5 flex items-center gap-3  text-2xl font-bold">
         <div className="mB-4 rounded-full bg-[#f4f5f6] p-4">
           <MdOutlineUpdate />
         </div>
         <h2>Recent Updates</h2>
       </div>
-      <div className="flex flex-col gap-10">
+      <div className="flex w-full flex-col gap-10">
         {data.map((item, index) => (
-          <div className="flex justify-between" key={index}>
+          <div className="flex w-full justify-between" key={index}>
             <div className="font-[600]">
               <div className="text-xl text-black">
                 New deal was added by {item.email}✨
               </div>
-              <div className="text-lg text-gray-400">
-                {truncateText(item.tldr, MAX_WORDS)}
-                {item.tldr.split(" ").length > MAX_WORDS && (
-                  <span
-                    className="cursor-pointer text-blue-500"
-                    onClick={() => toggleExpansion(index)}
-                  >
-                    {expandedItems.includes(index)
-                      ? " Read less"
-                      : " Read more"}
-                  </span>
+              <div className="my-2 text-xl font-bold text-black">
+                {item.name}
+              </div>
+              <div className="text-lg font-normal text-gray-400">
+                {item.tldr.length > MAX_WORDS &&
+                !expandedItems.includes(index) ? (
+                  <>
+                    {`${item.tldr
+                      .split(" ")
+                      .slice(0, MAX_WORDS)
+                      .join(" ")}... `}
+                    <button
+                      onClick={() =>
+                        setExpandedItems((prevItems) => [...prevItems, index])
+                      }
+                      className="text-blue-500"
+                    >
+                      Read More
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {item.tldr}
+                    {item.tldr.length > MAX_WORDS && (
+                      <button
+                        onClick={() =>
+                          setExpandedItems((prevItems) =>
+                            prevItems.filter((item) => item !== index)
+                          )
+                        }
+                        className="text-blue-500"
+                      >
+                        Read Less
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </div>
             <div className="text-sm">
-              <div className="bg-gray-200/50 p-1 px-5 font-bold text-gray-400">
+              <div className="min-w-[40%] bg-gray-200/50 p-1 px-5 font-bold text-gray-400">
                 <Link href={item.website}>view</Link>
               </div>
-              <div className="text-gray-400">{item.createdAt}</div>
+              <div className="text-xs text-gray-400">{item.deal_date}</div>
             </div>
           </div>
         ))}
