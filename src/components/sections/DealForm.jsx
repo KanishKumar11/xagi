@@ -41,6 +41,7 @@ const formSchema = z.object({
   date: z.date(),
   status: z.enum(["Invested", "Passed", "IC", "Inbound"]),
   website: z.string(),
+  files: z.string().optional(),
 });
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -62,6 +63,7 @@ export default function Home({ onBrandChange }) {
       date: null,
       status: "",
       website: "",
+      // files: [""],
     },
   });
 
@@ -70,6 +72,26 @@ export default function Home({ onBrandChange }) {
     try {
       // Insert data into the Supabase table
       const loadingToast = toast.loading("Submitting...");
+      // const fileLinks = [];
+      // if (values.files) {
+      //   const filesToUpload = values.files?.map(async (file) => {
+      //     const { data, error } = await supabase.storage
+      //       .from("files")
+      //       .upload(`files/${generateUniqueId()}/${file.name}`, file.data);
+
+      //     if (error) {
+      //       console.error(
+      //         "Error uploading file to Supabase Storage:",
+      //         error.message
+      //       );
+      //     } else {
+      //       fileLinks.push(data.Key);
+      //     }
+      //   });
+      //   await Promise.all(filesToUpload);
+      // }
+      // console.log(values.files);
+      // console.log("files");
 
       const { data, error } = await supabase.from("details").upsert(
         [
@@ -84,6 +106,7 @@ export default function Home({ onBrandChange }) {
             website: values.website,
             email: email,
             id: id,
+            // file_links: values.files,
           },
         ],
         { onConflict: ["id"] }
@@ -110,8 +133,8 @@ export default function Home({ onBrandChange }) {
   const id = generateUniqueId();
 
   const [webUrl, setWebUrl] = useState("");
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [file, setFile] = useState();
   const fetchData = async (e) => {
     e.preventDefault();
     const cookiesEmail = await Cookies();
@@ -334,28 +357,29 @@ export default function Home({ onBrandChange }) {
               }}
             />
 
-            {/* Uncomment the below code if you want to include the "Files" field */}
             {/* <FormField
-            control={form.control}
-            name="files"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Files</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Upload files"
-                    {...field}
-                    type="file"
-                    multiple
-                  />
-                </FormControl>
-                <FormDescription>
-                  Upload files related to the deal
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
+              control={form.control}
+              name="files"
+              id="files"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Files</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Upload files"
+                      {...field}
+                      type="file"
+                      multiple
+                      // onChange={(e) => setFile(e.target.files?.[0])}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Upload files related to the deal
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
 
             <Button type="submit">Submit</Button>
           </form>

@@ -47,41 +47,33 @@ const DealFlow = () => {
   });
 
   return (
-    <div className="relative max-w-6xl rounded-[50px] bg-white p-10 py-12">
+    <div className="relative max-w-6xl rounded-[50px] bg-white p-5 py-12 md:p-10">
       <div className="mb-5 flex gap-3   text-2xl font-bold">
         <div className="h-[50px]  rounded-full bg-[#f4f5f6] p-4">
           <BiSolidBriefcaseAlt2 />
         </div>
-        <div className="w-full pt-2">
+        <div className=" w-full pt-2">
           <div className="flex items-center justify-between">
             <div>
-              <h2>Deal Flow</h2>
-              <div className="my-3 text-sm font-bold text-gray-400">
+              <h2 className="text-base md:text-2xl">Deal Flow</h2>
+              <div className="my-3 text-xs font-bold text-gray-400 md:text-sm">
                 Total Count: 1,032
               </div>
             </div>
             <Link href="/add-a-new-deal">
-              <div className="cursor-pointer rounded-full bg-gray-100 p-2">
+              <div className="mr-16 cursor-pointer rounded-full bg-gray-100 p-2 md:mr-0">
                 <HiPlus />
               </div>
             </Link>
           </div>
-          <div className="flex justify-between gap-10 border-b border-gray-200 py-5 text-base font-normal">
-            <div className="flex items-center gap-10 font-[600]">
+          <div className="-ml-[70px] flex justify-between gap-10 border-gray-200 py-5 text-sm font-normal md:border-b md:text-base">
+            <div className="flex max-w-max items-center gap-10 font-[600]">
               <div>All Deals</div>
 
               <div>Under Review</div>
             </div>
-            {/* <div className="flex items-center gap-10">
-              <div className="cursor-pointer rounded-3xl border border-gray-300 p-5 py-1">
-                Filter
-              </div>
-              <div className="cursor-pointer rounded-3xl border border-gray-300 p-5 py-1">
-                Sort
-              </div>
-            </div> */}
           </div>
-          <div className=" mx-auto w-full py-10 text-gray-400">
+          <div className="mx-auto -ml-[70px] w-full py-10 text-gray-400">
             <DataTable columns={Columns} data={data} />
           </div>
         </div>

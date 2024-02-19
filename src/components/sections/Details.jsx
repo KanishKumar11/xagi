@@ -21,28 +21,32 @@ const Funds = [
 ];
 const Details = () => {
   return (
-    <div className="bg-white rounded-[50px] p-10 py-12  relative max-w-6xl">
-      <div className="text-2xl font-bold flex items-center  gap-3">
-        <div className="bg-[#f4f5f6] p-4 rounded-full mB-4">
+    <div className="relative max-w-6xl rounded-[50px] bg-white  p-10 py-12">
+      <div className="flex items-center gap-3 text-lg font-bold  md:text-2xl">
+        <div className="mB-4 rounded-full bg-[#f4f5f6] p-4">
           <BsBuildingsFill />
         </div>
         <h2>Bankless Ventures Overview</h2>
       </div>
-      <div>
-        <div className="flex justify-between items-center mt-4 text-lg font-medium capitalize">
+      <div className="w-full">
+        <div className="mt-4  flex w-full flex-wrap gap-5 text-lg font-medium capitalize md:flex-nowrap">
           {Funds.map((item, index) => (
             <div
               key={index}
-              className={`flex flex-col items-center justify-between text-center ${
-                index <= 2 && "border-r"
-              } border-gray-300 px-5 w-full`}
+              className={` col-span-${
+                index === 0 ? "6" : "3"
+              } flex min-w-[115px] max-w-max flex-col items-center justify-between text-center ${
+                index <= 2 && "md:border-r"
+              } border-gray-300 px-5`}
             >
-              <div className="flex leading-10 items-center text-center mx-auto ">
-                <span className="text-gray-400 text-lg">{item.title}</span>
+              <div className="mx-auto flex items-center text-center leading-10 ">
+                <span className="text-sm text-gray-400 md:text-lg">
+                  {item.title}
+                </span>
               </div>
-              <div className="text-2xl text-black font-bold">
+              <div className="text-wrap text-base font-bold text-black md:text-2xl">
                 {item.value}
-                <span className="text-gray-400 text-lg font-normal">
+                <span className="text-sm font-normal text-gray-400 md:text-lg">
                   &nbsp;{item.tVal}
                 </span>
               </div>

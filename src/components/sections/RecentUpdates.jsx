@@ -61,14 +61,12 @@ const RecentUpdates = () => {
       </div>
       <div className="flex w-full flex-col gap-10">
         {data.map((item, index) => (
-          <div className="flex w-full justify-between" key={index}>
-            <div className="font-[600]">
-              <div className="text-xl text-black">
+          <div className="flex w-[70%] justify-between md:w-full" key={index}>
+            <div className="max-w-[80%] text-base font-[600] md:max-w-full md:text-xl">
+              <div className=" text-black">
                 New deal was added by {item.email}✨
               </div>
-              <div className="my-2 text-xl font-bold text-black">
-                {item.name}
-              </div>
+              <div className="my-2  font-bold text-black">{item.name}</div>
               <div className="text-lg font-normal text-gray-400">
                 {item.tldr.length > MAX_WORDS &&
                 !expandedItems.includes(index) ? (

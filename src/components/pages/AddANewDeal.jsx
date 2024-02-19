@@ -16,11 +16,11 @@ const AddANewDeal = () => {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-20 p-10">
-      <div className="col-span-6">
+    <div className="flex grid-cols-12 flex-col gap-20 p-2 lg:grid lg:p-10">
+      <div className=" lg:col-span-6">
         <DealForm onBrandChange={handleBrandChange} />
       </div>
-      <div className="col-span-6 flex flex-col gap-20">
+      <div className="col-span-12 flex flex-col gap-20 lg:col-span-6">
         <Summary links={link} tldr={desc} />
         <NewsMentions name={brand} />
         <Competition desc={desc} />

@@ -19,6 +19,14 @@ export const Columns = [
   {
     accessorKey: "tldr",
     header: "TLDR",
+
+    cell: ({ row }) => {
+      return (
+        <span className="inline-block min-w-[150px] text-xs font-normal">
+          {row.getValue("tldr").split(" ").slice(0, 20).join(" ")}...
+        </span>
+      );
+    },
   },
   {
     accessorKey: "deck",
