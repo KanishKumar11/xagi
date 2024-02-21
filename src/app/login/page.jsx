@@ -10,6 +10,7 @@ import { Alert } from "@/components/ui/alert";
 export default function Login({ searchParams }) {
   const signIn = async (formData) => {
     "use server";
+    const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
     const email = formData.get("email");
     const password = formData.get("password");
@@ -22,9 +23,9 @@ export default function Login({ searchParams }) {
     });
 
     if (error) {
-      return redirect("/login?message=Could not authenticate user");
+      return redirect("/login?message=Invalid Credentials");
     }
-    cookieStore.set("email", email, { path: "/" });
+    cookieStore.set("email", email, { path: "/", expires });
 
     return redirect("/");
   };

@@ -27,11 +27,12 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { createClient } from "@supabase/supabase-js";
 import toast, { Toaster } from "react-hot-toast";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { fetchMetaData } from "./fetchData";
 import { v4 as uuidv4 } from "uuid";
 
 import Cookies from "@/components/sections/cookies";
+import axios from "axios";
 const formSchema = z.object({
   name: z.string().min(1).max(256),
   origin: z.string().min(1).max(256),
@@ -41,11 +42,12 @@ const formSchema = z.object({
   date: z.date(),
   status: z.enum(["Invested", "Passed", "IC", "Inbound"]),
   website: z.string(),
-  files: z.string().optional(),
+  files: z.array(z.any()).optional(),
 });
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  // eslint-disable-next-line turbo/no-undeclared-env-vars
+  process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY
 );
 function generateUniqueId() {
   return uuidv4();
@@ -63,36 +65,14 @@ export default function Home({ onBrandChange }) {
       date: null,
       status: "",
       website: "",
-      // files: [""],
+      files: [""],
     },
   });
-
+  const inputRef = useRef(null);
   const handleSubmit = async (values) => {
+    const loadingToast = toast.loading("Submitting...");
     console.log(values.name);
     try {
-      // Insert data into the Supabase table
-      const loadingToast = toast.loading("Submitting...");
-      // const fileLinks = [];
-      // if (values.files) {
-      //   const filesToUpload = values.files?.map(async (file) => {
-      //     const { data, error } = await supabase.storage
-      //       .from("files")
-      //       .upload(`files/${generateUniqueId()}/${file.name}`, file.data);
-
-      //     if (error) {
-      //       console.error(
-      //         "Error uploading file to Supabase Storage:",
-      //         error.message
-      //       );
-      //     } else {
-      //       fileLinks.push(data.Key);
-      //     }
-      //   });
-      //   await Promise.all(filesToUpload);
-      // }
-      // console.log(values.files);
-      // console.log("files");
-
       const { data, error } = await supabase.from("details").upsert(
         [
           {
@@ -134,7 +114,7 @@ export default function Home({ onBrandChange }) {
 
   const [webUrl, setWebUrl] = useState("");
   const [email, setEmail] = useState("");
-  const [file, setFile] = useState();
+  const [files, setFiles] = useState(null);
   const fetchData = async (e) => {
     e.preventDefault();
     const cookiesEmail = await Cookies();
@@ -155,6 +135,27 @@ export default function Home({ onBrandChange }) {
     console.log(date);
     form.setValue("date", date);
   };
+  async function handleFileUpload(event) {
+    if (!event.target.files || event.target.files.length === 0) {
+      return; // User canceled file selection
+    }
+    let file;
+    if (event.target.files) {
+      file = event.target.files[0];
+    }
+    const { data, error } = await supabase.storage
+      .from("files")
+      .upload("public/" + file?.name, file, { contentType: file.type });
+    if (data) {
+      console.log(file.type);
+      console.log(data);
+    } else if (error) {
+      console.log(error);
+    }
+
+    form.setValue("files", files);
+  }
+
   return (
     <>
       <Toaster />
@@ -357,7 +358,7 @@ export default function Home({ onBrandChange }) {
               }}
             />
 
-            {/* <FormField
+            <FormField
               control={form.control}
               name="files"
               id="files"
@@ -369,8 +370,9 @@ export default function Home({ onBrandChange }) {
                       placeholder="Upload files"
                       {...field}
                       type="file"
+                      ref={inputRef}
+                      onChange={handleFileUpload}
                       multiple
-                      // onChange={(e) => setFile(e.target.files?.[0])}
                     />
                   </FormControl>
                   <FormDescription>
@@ -379,7 +381,7 @@ export default function Home({ onBrandChange }) {
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
 
             <Button type="submit">Submit</Button>
           </form>

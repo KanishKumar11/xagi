@@ -1,7 +1,7 @@
-"use client";
 import React, { useState } from "react";
 import {
   ColumnDef,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
@@ -18,8 +18,16 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-const DataTable = ({ columns, data }) => {
-  const [sorting, setSorting] = useState([]);
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+}
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
   const table = useReactTable({
     data,
     columns,
@@ -31,24 +39,23 @@ const DataTable = ({ columns, data }) => {
       sorting,
     },
   });
+
   return (
-    <div className="rounded-md w-full">
+    <div className="w-full rounded-md">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>
@@ -57,7 +64,7 @@ const DataTable = ({ columns, data }) => {
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                data-state={row.getIsSelected() ? "selected" : undefined}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
@@ -95,6 +102,6 @@ const DataTable = ({ columns, data }) => {
       </div>
     </div>
   );
-};
+}
 
 export default DataTable;

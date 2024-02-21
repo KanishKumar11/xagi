@@ -53,7 +53,7 @@ const NewsMentions = ({ name }) => {
             <p>Loading...</p>
           ) : (
             <div className="flex flex-col gap-5">
-              {newsData.length > 0 ? (
+              {newsData?.length > 0 ? (
                 newsData.slice(0, 3).map((item, index) => (
                   <div key={index}>
                     <h3 className="text-lg font-bold">{item.title}</h3>

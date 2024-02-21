@@ -60,7 +60,7 @@ const RecentUpdates = () => {
         <h2>Recent Updates</h2>
       </div>
       <div className="flex w-full flex-col gap-10">
-        {data.map((item, index) => (
+        {data.slice(0, 4).map((item, index) => (
           <div className="flex w-[70%] justify-between md:w-full" key={index}>
             <div className="max-w-[80%] text-base font-[600] md:max-w-full md:text-xl">
               <div className=" text-black">
