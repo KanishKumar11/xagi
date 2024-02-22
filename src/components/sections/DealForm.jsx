@@ -32,7 +32,6 @@ import { fetchMetaData } from "./fetchData";
 import { v4 as uuidv4 } from "uuid";
 
 import Cookies from "@/components/sections/cookies";
-import axios from "axios";
 const formSchema = z.object({
   name: z.string().min(1).max(256),
   origin: z.string().min(1).max(256),
@@ -42,7 +41,7 @@ const formSchema = z.object({
   date: z.date(),
   status: z.enum(["Invested", "Passed", "IC", "Inbound"]),
   website: z.string(),
-  files: z.array(z.any()).optional(),
+  files: z.any().optional(),
 });
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -86,7 +85,7 @@ export default function Home({ onBrandChange }) {
             website: values.website,
             email: email,
             id: id,
-            // file_links: values.files,
+            file_links: fileLinks,
           },
         ],
         { onConflict: ["id"] }
@@ -114,7 +113,8 @@ export default function Home({ onBrandChange }) {
 
   const [webUrl, setWebUrl] = useState("");
   const [email, setEmail] = useState("");
-  const [files, setFiles] = useState(null);
+  const [fileLinks, setFileLinks] = useState([]);
+  const [filesData, setFilesData] = useState(null);
   const fetchData = async (e) => {
     e.preventDefault();
     const cookiesEmail = await Cookies();
@@ -139,21 +139,61 @@ export default function Home({ onBrandChange }) {
     if (!event.target.files || event.target.files.length === 0) {
       return; // User canceled file selection
     }
-    let file;
-    if (event.target.files) {
-      file = event.target.files[0];
-    }
-    const { data, error } = await supabase.storage
-      .from("files")
-      .upload("public/" + file?.name, file, { contentType: file.type });
-    if (data) {
-      console.log(file.type);
-      console.log(data);
-    } else if (error) {
-      console.log(error);
+
+    const files = event.target.files;
+
+    const uploadPromises = [];
+    form.setValue("files", filesData);
+
+    for (const file of Array.from(files)) {
+      const promise = (async () => {
+        try {
+          const uniqueFileName = `${uuidv4()}_${file.name.replace(/\s/g, "")}`;
+
+          const { data, error } = await supabase.storage
+            .from("files")
+            .upload(`public/${uniqueFileName}`, file, {
+              contentType: file.type,
+            });
+          if (error) {
+            console.error("Error uploading file to Supabase:", error);
+            throw new Error("File upload error");
+          }
+
+          // Get the public URL of the uploaded file
+          const fileUrl = supabase.storage
+            .from("files")
+            .getPublicUrl(uniqueFileName);
+
+          console.log("File uploaded to Supabase:", data);
+
+          return { name: uniqueFileName, url: fileUrl };
+        } catch (error) {
+          console.error("Error handling file upload:", error);
+          throw error;
+        }
+      })();
+
+      uploadPromises.push(promise);
     }
 
-    form.setValue("files", files);
+    try {
+      const uploadedFiles = await Promise.all(uploadPromises);
+
+      const fileLinks = uploadedFiles.map((file) => file.url);
+      const linksArray = fileLinks.map((file) => file.data.publicUrl);
+
+      const modifiedLinksArray = linksArray.map((link) =>
+        link.replace(
+          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/files/`,
+          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/files/public/`
+        )
+      );
+
+      setFileLinks(modifiedLinksArray);
+    } catch (error) {
+      console.error("Error handling file uploads:", error);
+    }
   }
 
   return (
