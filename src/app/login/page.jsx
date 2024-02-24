@@ -6,8 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
-
+import GoogleLogin from "@/components/GoogleLogin";
 export default function Login({ searchParams }) {
+  const cookieStore = cookies();
+
+  const supabase = createClient(cookieStore);
+
   const signIn = async (formData) => {
     "use server";
     const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
@@ -56,14 +60,6 @@ export default function Login({ searchParams }) {
     return redirect("/dashboard");
   };
 
-  const signInWithGoogle = async () => {
-    "use server";
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-    console.log(data);
-    console.log(error);
-  };
   return (
     <div className="flex w-full flex-1 flex-col justify-center gap-2 px-8 text-slate-100 sm:max-w-md">
       <Link
@@ -116,7 +112,7 @@ export default function Login({ searchParams }) {
           </Button>
         </div>
       </form>
-      <Button onClick={signInWithGoogle}>Google</Button>
+      <GoogleLogin />
     </div>
   );
 }
