@@ -33,7 +33,8 @@ export default function Login({ searchParams }) {
   const signUp = async (formData) => {
     "use server";
 
-    const origin = headers().get("origin");
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    const origin = process.env.URL;
     const email = formData.get("email");
     const password = formData.get("password");
     const cookieStore = cookies();
@@ -55,8 +56,16 @@ export default function Login({ searchParams }) {
     return redirect("/dashboard");
   };
 
+  const signInWithGoogle = async () => {
+    "use server";
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+    console.log(data);
+    console.log(error);
+  };
   return (
-    <div className="flex w-full flex-1 flex-col justify-center gap-2 px-8 sm:max-w-md">
+    <div className="flex w-full flex-1 flex-col justify-center gap-2 px-8 text-slate-100 sm:max-w-md">
       <Link
         href="/"
         className="bg-btn-background hover:bg-btn-background-hover group absolute left-8 top-8 flex items-center rounded-md px-4 py-2 text-sm text-slate-300 no-underline"
@@ -74,12 +83,12 @@ export default function Login({ searchParams }) {
           className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1"
         >
           <polyline points="15 18 9 12 15 6" />
-        </svg>{" "}
+        </svg>
         Back
       </Link>
 
       <form
-        className="flex w-full flex-1 flex-col justify-center gap-4 text-foreground animate-in"
+        className="flex w-full flex-1 flex-col justify-center gap-4 text-slate-100 animate-in"
         action={signIn}
       >
         <div className="flex flex-col gap-2">
@@ -99,7 +108,7 @@ export default function Login({ searchParams }) {
           <Alert variant="destructive">{searchParams.message}</Alert>
         )}
         <div className="flex flex-col gap-2">
-          <Button formAction={signIn} variant="outline">
+          <Button formAction={signIn} variant="secondary">
             Sign In
           </Button>
           <Button formAction={signUp} variant="secondary">
@@ -107,6 +116,7 @@ export default function Login({ searchParams }) {
           </Button>
         </div>
       </form>
+      <Button onClick={signInWithGoogle}>Google</Button>
     </div>
   );
 }

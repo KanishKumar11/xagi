@@ -19,13 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.className} w-full`}>
+    <html lang="en" className={`${GeistSans.className} h-full w-full`}>
       <body
-        className="w-full bg-[#002E58] text-foreground"
+        className="h-full w-full bg-[#002E58] text-foreground"
         suppressHydrationWarning
       >
         <Navbar />
-        <main className="flex min-h-screen w-full flex-col items-center">
+        <main className="flex min-h-[80%] w-full flex-col items-center">
           <MobXProvider>{children}</MobXProvider>
         </main>
       </body>

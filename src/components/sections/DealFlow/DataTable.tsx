@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
+// import type {
+//   DataTableFilterableColumn,
+//   DataTableSearchableColumn,
+// } from "@/types"
 import {
-  ColumnDef,
+  type ColumnDef,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -8,6 +12,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { DataTablePagination } from "./data-table-pagination";
+import { DataTableFloatingBar } from "./data-table-floating-bar";
 import {
   Table,
   TableBody,
@@ -21,10 +27,12 @@ import { Button } from "@/components/ui/button";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  floatingBarContent?: React.ReactNode | null;
 }
 export function DataTable<TData, TValue>({
   columns,
   data,
+  floatingBarContent,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -82,23 +90,13 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={table.nextPage}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div className="space-y-2.5">
+        <DataTablePagination table={table} />
+        {floatingBarContent ? (
+          <DataTableFloatingBar table={table}>
+            {floatingBarContent}
+          </DataTableFloatingBar>
+        ) : null}
       </div>
     </div>
   );
