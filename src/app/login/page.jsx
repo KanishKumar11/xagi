@@ -31,7 +31,7 @@ export default function Login({ searchParams }) {
     }
     cookieStore.set("email", email, { path: "/", expires });
 
-    return redirect("/");
+    return redirect("/app");
   };
 
   const signUp = async (formData) => {
@@ -57,7 +57,7 @@ export default function Login({ searchParams }) {
     }
     cookieStore.set("email", email, { path: "/" });
 
-    return redirect("/dashboard");
+    return redirect("/app");
   };
 
   return (
@@ -84,15 +84,19 @@ export default function Login({ searchParams }) {
       </Link>
 
       <form
-        className="flex w-full flex-1 flex-col justify-center gap-4 text-slate-100 animate-in"
+        className="flex w-full flex-1 flex-col justify-center gap-4  animate-in"
         action={signIn}
       >
         <div className="flex flex-col gap-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email" className="text-slate-100">
+            Email
+          </Label>
           <Input name="email" placeholder="you@example.com" required />
         </div>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password" className="text-slate-100">
+            Password
+          </Label>
           <Input
             type="password"
             name="password"
@@ -101,7 +105,9 @@ export default function Login({ searchParams }) {
           />
         </div>
         {searchParams?.message && (
-          <Alert variant="destructive">{searchParams.message}</Alert>
+          <Alert variant="destructive" className="bg-white p-3 ">
+            {searchParams.message}
+          </Alert>
         )}
         <div className="flex flex-col gap-2">
           <Button formAction={signIn} variant="secondary">
