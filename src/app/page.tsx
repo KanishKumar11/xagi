@@ -5,12 +5,15 @@ import { useEffect } from "react";
 
 export default function Page() {
   const router = useRouter();
-  const accessToken = new URLSearchParams(window?.location?.hash).get(
-    "#access_token"
-  );
-  const refreshToken = new URLSearchParams(window?.location?.hash).get(
-    "refresh_token"
-  );
+  const isBrowser = typeof window !== "undefined";
+
+  const accessToken = isBrowser
+    ? new URLSearchParams(window.location.hash).get("#access_token")
+    : null;
+  const refreshToken = isBrowser
+    ? new URLSearchParams(window.location.hash).get("refresh_token")
+    : null;
+
   console.log(accessToken);
   console.log(refreshToken);
 
