@@ -31,7 +31,15 @@ const GoogleLogin = () => {
 
   return (
     <div>
-      <Button onClick={signInWithGoogle}>Google</Button>
+      <span className="mb-3 flex w-full items-center justify-center text-center">
+        or
+      </span>
+      <Button
+        onClick={signInWithGoogle}
+        className="login-with-google-btn w-full"
+      >
+        LogIn with Google
+      </Button>
     </div>
   );
 };
