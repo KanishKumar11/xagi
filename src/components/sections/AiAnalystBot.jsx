@@ -4,9 +4,9 @@ import { Input } from "../ui/input";
 
 const AiAnalystBot = () => {
   return (
-    <div className="bg-white rounded-[50px] p-10 py-12  relative max-w-6xl">
-      <div className="text-2xl font-bold flex items-center  gap-3">
-        <div className="bg-[#f4f5f6] p-4 rounded-full mB-4">
+    <div className="relative max-w-6xl rounded-[50px] bg-white  p-10 py-12">
+      <div className="flex items-center gap-3 text-2xl  font-bold">
+        <div className="mB-4 rounded-full bg-[#f4f5f6] p-4">
           <BsRobot />
         </div>
         <h2>Ai Analyst bot</h2>
@@ -16,16 +16,13 @@ const AiAnalystBot = () => {
           <p className="text-sm">Where are we at with the Ion deal?</p>
         </div>
         <div className=" message-blue">
-          <p className="text-sm">
-            Ben has sent funds and signed docs. No further steps here. Bankless
-            Ventures is officially invested in Ion!
-          </p>
+          <p className="text-sm">Coming Soon!</p>
         </div>
       </div>
       <div>
         <Input
           placeholder="Ask me anything!"
-          className=" border-none outline-none bg-gray-100 text-gray-600 py-7 rounded-3xl placeholder:font-bold"
+          className=" rounded-3xl border-none bg-gray-100 py-7 text-gray-600 outline-none placeholder:font-bold"
         />
       </div>
     </div>

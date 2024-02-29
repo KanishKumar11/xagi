@@ -1,36 +1,44 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/middleware";
+// pages/_middleware.js
+import { createClient } from "@supabase/supabase-js";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  // eslint-disable-next-line turbo/no-undeclared-env-vars
+  process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY!
+);
 
 export async function middleware(request: NextRequest) {
-  try {
-    // This `try/catch` block is only here for the interactive tutorial.
-    // Feel free to remove once you have Supabase connected.
-    const { supabase, response } = createClient(request);
+  const path = request.nextUrl.pathname;
+  const data = await supabase.auth.getUser(
+    request.cookies.get("access_token")?.value
+  );
+  console.log("user");
+  console.log(data);
+  const isPublicPath = path === "/login" || path === "/";
 
-    // Refresh session if expired - required for Server Components
-    // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    //
-    if (!session && request.nextUrl.pathname.startsWith("/app")) {
-      // redirect to /login
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-    if (!session && request.nextUrl.pathname.startsWith("/add-a-new-deal")) {
-      // redirect to /login
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    return response;
-  } catch (e) {
-    // If you are here, a Supabase client could not be created!
-    // This is likely because you have not set up environment variables.
-    // Check out http://localhost:3000 for Next Steps.
-    return NextResponse.next({
-      request: {
-        headers: request.headers,
-      },
-    });
+  const token = request.cookies.get("access_token")?.value || "";
+  // Allow access to logged-in users for /, /app, and /add-a-new-deal
+  if (data && ["/", "/app", "/add-a-new-deal"].includes(path)) {
+    return;
   }
+
+  // If the user is not logged in and trying to access a protected route, redirect to login
+  if (!data.data && !["/login"].includes(path)) {
+    return NextResponse.redirect(new URL("/login", request.nextUrl));
+  }
+
+  // If the user is logged in and trying to access a public route, redirect to home
+
+  // Allow access to everyone for public routes (/ and /login)
+  if (["/login"].includes(path)) {
+    return;
+  }
+
+  // For any other case, redirect to login
+  return NextResponse.redirect(new URL("/login", request.nextUrl));
 }
+
+export const config = {
+  matcher: ["/", "/app", "/login", "/add-a-new-deal"],
+};

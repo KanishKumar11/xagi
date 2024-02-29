@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert } from "@/components/ui/alert";
 import GoogleLogin from "@/components/GoogleLogin";
+// import toast, { Toaster } from "react-hot-toast";
+
 export default function Login({ searchParams }) {
   const cookieStore = cookies();
 
@@ -56,12 +58,15 @@ export default function Login({ searchParams }) {
       return redirect("/login?message=Could not authenticate user");
     }
     cookieStore.set("email", email, { path: "/" });
+    // toast.loading("Please validate your email...");
 
     return redirect("/app");
   };
 
   return (
     <div className="flex w-full flex-1 flex-col justify-center gap-2 px-8 text-slate-100 sm:max-w-md">
+      <div>{/* <Toaster /> */}</div>
+
       <Link
         href="/"
         className="bg-btn-background hover:bg-btn-background-hover group absolute left-8 top-8 flex items-center rounded-md px-4 py-2 text-sm text-slate-300 no-underline"
@@ -91,7 +96,12 @@ export default function Login({ searchParams }) {
           <Label htmlFor="email" className="text-slate-100">
             Email
           </Label>
-          <Input name="email" placeholder="you@example.com" required />
+          <Input
+            name="email"
+            placeholder="you@example.com"
+            required
+            className="text-black"
+          />
         </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor="password" className="text-slate-100">
@@ -101,6 +111,7 @@ export default function Login({ searchParams }) {
             type="password"
             name="password"
             placeholder="••••••••"
+            className="text-black"
             required
           />
         </div>

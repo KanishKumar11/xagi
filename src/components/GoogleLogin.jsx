@@ -1,6 +1,6 @@
-import React from "react";
+"use client";
 import { createClient } from "@supabase/supabase-js";
-import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
 
 const GoogleLogin = () => {
   const supabase = createClient(
@@ -9,25 +9,25 @@ const GoogleLogin = () => {
   );
 
   const signInWithGoogle = async () => {
-    "use server";
     try {
-      const { user, error } = await supabase.auth.signIn({
+      console.log("trying");
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
+        options: {
+          // eslint-disable-next-line turbo/no-undeclared-env-vars
+          redirectTo: `${process.env.URL}/auth/callback`,
+        },
       });
+      console.log("done");
 
+      console.log(data);
       if (error) {
         throw error; // Throw an error to be caught in the catch block
       }
-
-      console.log(user);
     } catch (error) {
       console.error("Error signing in with Google:", error.message);
     }
   };
-
-  // const user = supabase.auth.user();
-
-  // console.log(user);
 
   return (
     <div>
