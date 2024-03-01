@@ -55,8 +55,12 @@ export default function Login({ searchParams }) {
 
     if (error) {
       return redirect("/login?message=Could not authenticate user");
+    } else {
+      cookieStore.set("email", email, { path: "/" });
+      return redirect(
+        "/login?validate=Please validate your email using the link sent on your email"
+      );
     }
-    cookieStore.set("email", email, { path: "/" });
     // <ShowToast message="Please validate you email" />;
     return redirect("/app");
   };
@@ -114,6 +118,11 @@ export default function Login({ searchParams }) {
           {searchParams?.message && (
             <Alert variant="destructive" className="bg-white p-3 ">
               {searchParams.message}
+            </Alert>
+          )}
+          {searchParams?.validate && (
+            <Alert variant="success" className=" p-3 ">
+              {searchParams.validate}
             </Alert>
           )}
           <div className="flex flex-col gap-2">
