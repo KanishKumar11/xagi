@@ -7,10 +7,14 @@ export default function AuthenticatedNavigation() {
   return (
     <BasejumpUserSession>
       <SignedIn>
-        <Link href="/app">Dashboard</Link>
+        <Link href="/app" className="font-semiboldd text-2xl">
+          Dashboard
+        </Link>
       </SignedIn>
       <SignedOut>
-        <Link href="/login">Login</Link>
+        <Link href="/login" className="text-2xl font-semibold">
+          Login
+        </Link>
       </SignedOut>
     </BasejumpUserSession>
   );
